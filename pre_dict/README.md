@@ -42,11 +42,13 @@ end
 `equal?/2` — проверка равенства словарей
 
 ---
-##Тесты и CI
+## Тесты и CI
 `Unit`- и `property-based` тесты: проверка вставки, удаления, поиска, свойств объединения словарей.
+
 `CI Workflow` (.github/workflows/ci.yml) включает шаги:
-`mix format --check-formatted` — контроль стиля;
-`mix credo` — статический анализ;
-`mix test` — выполнение тестов.
+
+1. `mix format --check-formatted` — контроль стиля;
+2. `mix credo` — статический анализ;
+2. `mix test` — выполнение тестов.
 
 
