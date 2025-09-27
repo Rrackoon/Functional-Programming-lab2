@@ -39,7 +39,4 @@ defmodule PreDictPropertiesTest do
   end
 end
 
-
-
-
 end
