@@ -24,20 +24,23 @@ jobs:
       uses: actions/cache@v4
       with:
         path: |
-          deps
-          _build
-        key: ${{ runner.os }}-elixir-${{ hashFiles('mix.lock') }}
+          pre_dict/deps
+          pre_dict/_build
+        key: ${{ runner.os }}-elixir-${{ hashFiles('pre_dict/mix.lock') }}
 
     - name: Install dependencies  
+      working-directory: pre_dict
       run: |
         mix local.hex --force
         mix local.rebar --force
         mix deps.get
 
     - name: Check formatting  
+      working-directory: pre_dict
       run: mix format --check-formatted
 
     - name: Run linting  
+      working-directory: pre_dict
       run: mix credo
 
   elixir_tests:  
@@ -58,17 +61,17 @@ jobs:
       uses: actions/cache@v4
       with:
         path: |
-          deps
-          _build
-        key: ${{ runner.os }}-elixir-${{ hashFiles('mix.lock') }}
+          pre_dict/deps
+          pre_dict/_build
+        key: ${{ runner.os }}-elixir-${{ hashFiles('pre_dict/mix.lock') }}
 
     - name: Install dependencies
+      working-directory: pre_dict
       run: |
         mix local.hex --force
         mix local.rebar --force
         mix deps.get
 
     - name: Run Elixir tests  
+      working-directory: pre_dict
       run: mix test
-
-  
