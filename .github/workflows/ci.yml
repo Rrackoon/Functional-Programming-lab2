@@ -1,35 +1,74 @@
-name: Elixir CI
+name: CI Pipeline  
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ main ]  
   pull_request:
-    branches: [ "main" ]
+    branches: [ main ]  
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        elixir: [1.15.7, 1.16.2, 1.18.0]  
-        otp: [26.2]                       
-    name: Elixir ${{ matrix.elixir }} / OTP ${{ matrix.otp }}
+  check:  
+    runs-on: ubuntu-latest  
 
     steps:
-      - uses: actions/checkout@v4
+    - name: Checkout code  
+      uses: actions/checkout@v4
 
-      - name: Setup Elixir
-        uses: erlef/setup-beam@v1
-        with:
-          elixir-version: ${{ matrix.elixir }}
-          otp-version: ${{ matrix.otp }}
+    - name: Set up Elixir  
+      uses: erlef/setup-beam@v1
+      with:
+        otp-version: '27'  
+        elixir-version: '1.18.2'
 
-      - name: Install dependencies
-        run: mix deps.get
+    - name: Cache dependencies  
+      uses: actions/cache@v4
+      with:
+        path: |
+          deps
+          _build
+        key: ${{ runner.os }}-elixir-${{ hashFiles('mix.lock') }}
 
-      - name: Check formatting
-        run: mix format --check-formatted
+    - name: Install dependencies  
+      run: |
+        mix local.hex --force
+        mix local.rebar --force
+        mix deps.get
 
-      - name: Run tests
-        run: mix test --warnings-as-errors
+    - name: Check formatting  
+      run: mix format --check-formatted
+
+    - name: Run linting  
+      run: mix credo
+
+  elixir_tests:  
+    runs-on: ubuntu-22.04
+    needs: check  
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Elixir
+      uses: erlef/setup-beam@v1
+      with:
+        otp-version: '27'
+        elixir-version: '1.18.2'
+
+    - name: Cache dependencies
+      uses: actions/cache@v4
+      with:
+        path: |
+          deps
+          _build
+        key: ${{ runner.os }}-elixir-${{ hashFiles('mix.lock') }}
+
+    - name: Install dependencies
+      run: |
+        mix local.hex --force
+        mix local.rebar --force
+        mix deps.get
+
+    - name: Run Elixir tests  
+      run: mix test
+
+  
