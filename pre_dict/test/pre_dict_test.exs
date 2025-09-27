@@ -4,10 +4,6 @@ defmodule PreDictTest do
   alias PreDict
   use ExUnitProperties
 
-  # -------------------
-  # Обычные unit-тесты
-  # -------------------
-
   test "put and get" do
     dict =
       PreDict.new()
