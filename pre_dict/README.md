@@ -1,21 +1,52 @@
-# PreDict
+# Лабораторная работа по Функциональному программированию
 
-**TODO: Add description**
+**Выполнила Козырева Эмилия, ИСУ - 394031.**
 
-## Installation
+[![CI Pipeline](https://github.com/Rrackoon/functional-programming-lab2/actions/workflows/ci.yml/badge.svg)](https://github.com/Rrackoon/functional-programming-lab2/actions/workflows/ci.yml)
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `pre_dict` to your list of dependencies in `mix.exs`:
+---
+
+## Требования к разработанному ПО
+
+1. Реализовать абстрактный тип данных «словарь» (PreDict) с поддержкой:  
+   - вставки пары ключ–значение;  
+   - получения значения по ключу;  
+   - удаления;  
+   - объединения словарей;  
+   - функций высшего порядка (map, filter, foldl, foldr).  
+
+2. Обеспечить неизменяемость структуры (функциональный стиль).  
+
+3. Добавить тесты, включая property-based тестирование.  
+
+4. Настроить автоматическую проверку (GitHub Actions, CI/CD):  
+   - форматирование кода;  
+   - статический анализ (Credo);  
+   - выполнение тестов.  
+---
+## Ключевые элементы реализации
+
+Модуль *PreDict* содержит основные операции:  
 
 ```elixir
-def deps do
-  [
-    {:pre_dict, "~> 0.1.0"}
-  ]
+def put(%PreDict{root: root, size: size} = dict, key, value) do
+  {new_root, added?} = Node.put(root, key, value)
+  %PreDict{dict | root: new_root, size: if(added?, do: size + 1, else: size)}
 end
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at <https://hexdocs.pm/pre_dict>.
+`put/3` — вставка элемента
+`get/3` — получение по ключу с дефолтом
+`map/2`, `filter/2`, `foldl/3`, `foldr/3` — функции высшего порядка
+`combine/2` — объединение двух словарей
+`equal?/2` — проверка равенства словарей
+
+---
+##Тесты и CI
+`Unit`- и `property-based` тесты: проверка вставки, удаления, поиска, свойств объединения словарей.
+`CI Workflow` (.github/workflows/ci.yml) включает шаги:
+`mix format --check-formatted` — контроль стиля;
+`mix credo` — статический анализ;
+`mix test` — выполнение тестов.
+
 
