@@ -30,13 +30,15 @@ defmodule PreDictPropertiesTest do
   end
 
   property "combine is commutative (for disjoint keys)" do
-  check all kvs1 <- uniq_list_of({integer(-1_000_000..-1), integer()}, uniq_fun: fn {k, _} -> k end),
-            kvs2 <- uniq_list_of({integer(1..1_000_000), integer()}, uniq_fun: fn {k, _} -> k end) do
-    d1 = Enum.reduce(kvs1, PreDict.new(), fn {k, v}, acc -> PreDict.put(acc, k, v) end)
-    d2 = Enum.reduce(kvs2, PreDict.new(), fn {k, v}, acc -> PreDict.put(acc, k, v) end)
+    check all(
+            kvs1 <-
+              uniq_list_of({integer(-1_000_000..-1), integer()}, uniq_fun: fn {k, _} -> k end),
+            kvs2 <- uniq_list_of({integer(1..1_000_000), integer()}, uniq_fun: fn {k, _} -> k end)
+          ) do
+      d1 = Enum.reduce(kvs1, PreDict.new(), fn {k, v}, acc -> PreDict.put(acc, k, v) end)
+      d2 = Enum.reduce(kvs2, PreDict.new(), fn {k, v}, acc -> PreDict.put(acc, k, v) end)
 
-    assert PreDict.equal?(PreDict.combine(d1, d2), PreDict.combine(d2, d1))
+      assert PreDict.equal?(PreDict.combine(d1, d2), PreDict.combine(d2, d1))
+    end
   end
-end
-
 end
