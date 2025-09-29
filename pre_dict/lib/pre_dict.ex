@@ -38,6 +38,7 @@ defmodule PreDict do
   end
 
   def equal?(%PreDict{size: s1}, %PreDict{size: s2}) when s1 != s2, do: false
+
   def equal?(d1, d2) do
     foldl(d1, true, fn {k, v}, acc ->
       acc and get(d2, k, :__not_found__) == v
